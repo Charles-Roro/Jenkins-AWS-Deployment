@@ -108,32 +108,51 @@ No we need to install and move terraform from the terminal:
 
 In terminal/gitbash/docker-terminal run the command "docker exec -it <your_container_name> bash"
 
+Now let's install the awscli "apt update && apt install -y awscli"
+
 Next we need to update our packages "apt update && apt install -y curl unzip"
 
 Next make a directory for our terraform files "mkdir -p /home/jenkins/bin"
 
 Now we need to download the terraform Binary. Mind you this command is for Apple Silicon(ARM64) Chipset 
-"curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/1.6.3/terraform_1.6.3_linux_arm64.zip/home/jenkins/terraform.zip"
+"wget https://releases.hashicorp.com/terraform/1.10.5/terraform_1.10.5_linux_arm64.zip"
 
 **For x86 you will need a different binary.** 
 
 Now we need to extract and Move Terraform to the correct location with this command:
-"unzip /home/jenkins/terraform.zip -d /home/jenkins/bin
-rm /home/jenkins/terraform.zip
-export PATH="/home/jenkins/bin:$PATH"
+"unzip terraform_1.10.5_linux_arm64.zip
+mv terraform /usr/local/bin/
+chmod +x /usr/local/bin/terraform"
 
 Next lets check if terraform is working with "terraform -version"
-We should see an output some like this "Terraform v1.6.3
+We should see an output some like this "Terraform v1.10.5
 on linux_arm64"
 
 ---
 
+****Now we will setup the pipeline and deploy to AWS!****
 
+Now back in our browser we need to navigate to the "dashboard" and click "new item"
+Enter a name and select "Pipeline"
+Enter your description of your choice
+![Screenshot 2025-02-12 at 3 31 16 PM](https://github.com/user-attachments/assets/71c0c47f-360a-406a-adcd-2489d3e64864)
 
+Scroll down to "Pipeline" under the "Definition" drop down select "Pipeline script from SCM">>Under the "SCM" drop down select "Git"
+Now under Repositories>>URL enter the URL of the repo we created earlier!
+Under "Branches to Build">>"Branch Specifier" add the name of the branch you pushed to in Github
+![Screenshot 2025-02-12 at 3 35 47 PM](https://github.com/user-attachments/assets/9ad7cc2e-13cf-46da-a34f-ac387c30ba6b)
 
+Make sure "Script Path is 'Jenkinsfile'" Then click save.
 
+Now let's deploy
+![Screenshot 2025-02-12 at 4 04 05 PM](https://github.com/user-attachments/assets/bfb99392-58b3-4766-a2d2-82328b15d939)
 
+Looks good now let's scroll to the bottom and click "Deploy"
 
+![Screenshot 2025-02-12 at 4 04 44 PM](https://github.com/user-attachments/assets/65e0de39-3f99-495f-ae94-724dd1af4ce5)
+
+Alright our Images are now up and running in AWS!
+![Screenshot 2025-02-12 at 4 09 54 PM](https://github.com/user-attachments/assets/5d19bcb1-12e2-4688-9ba0-de7ae8825fcb)
 
 
 
