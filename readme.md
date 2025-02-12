@@ -13,9 +13,10 @@ This project demonstrates how to **automate AWS infrastructure deployment** usin
 - Docker  (_Containerized Jenkins environment for portability and automation_)
 - Jenkins  (_Running in a Docker container locally to automate the pipeline_)   
 - Jenkinsfile  (_Defines pipeline stages for infrastructure deployment_)  
-  
 
-**📂 Terraform Infrastructure Setup**
+---  
+
+****📂 Terraform Infrastructure Setup****
 
 First Let's create our repo.
 ![Screenshot 2025-02-12 at 1 23 47 PM](https://github.com/user-attachments/assets/743a08dd-6065-411e-9ed2-3cab624cd6da)
@@ -27,7 +28,7 @@ Our terraform files will now be uploaded to our GitHub repo. We need to run the 
 
 "git init" (To start git on our local folder)
 
-"git add ." (This will add all the files in our current working directory. If you don't want to add all files there are two ways to resolve this. We could use a .gitignore file[https://git-scm.com/docs/gitignore])
+"git add ." (This will add all the files in our current working directory. If you don't want to add all files there are two ways to resolve this. We could use a [.gitignore file](https://git-scm.com/docs/gitignore)
 
 OR "git add <name_of_the_files_you_want_to_add" (Notice there is no "." after "add" this means we need to name them 1 by 1)
 
@@ -64,7 +65,68 @@ Without this we will not have access to our Jenkins image. In a browser we need 
 
 Perfect, we can now access our Jenkins instance. Back in docker click on the name of your container. 
 This will take you to the logs and there you can navigate where it has your "username" and "password"
-We are now logged in!
+We are now logged in! 
+
+
+---
+
+****Now we will set up plugins in Jenkins and AWS credentials in Jenkins****
+
+Once in Jenkins go to dashboard>>Manage Jenkins>>Plugins>>Available plugins
+This link will show you the plugins needed [it's a long list](https://docs.google.com/document/d/1gFvo-75iptPx6gZqBC5iXSSGteMEGhg8fnyC1cUZSws/edit?usp=sharing)
+It may take some time to install these.
+
+Now our plugin list should look something like this to start with.
+![Screenshot 2025-02-12 at 2 31 48 PM](https://github.com/user-attachments/assets/00eacc7e-f5eb-4f55-b181-5df565e022f4)
+
+Next lets go to our AWS console
+![Screenshot 2025-02-12 at 2 33 56 PM](https://github.com/user-attachments/assets/cbae5f9a-58b6-405b-a2b9-cdaa3336d8b0)
+
+On the top right it shows our user name. Click the drop down arrow then "Security credentials" 
+Navigate down to "Access Keys" click "create new" and copy your "access key id" and "secret id" we need these for Jenkins.
+
+Now back in Jenkins navigate to Dashboard>>Manage Jenkins>>Credentials at the bottom of the screen "Stores scoped to Jenkins"
+![Screenshot 2025-02-12 at 2 40 40 PM](https://github.com/user-attachments/assets/52176255-6ff6-42b5-be85-29fe6aa0f42e)
+
+Click "+ Add credentials" on the right hand side.
+![Screenshot 2025-02-12 at 2 41 34 PM](https://github.com/user-attachments/assets/c63a8193-82ce-45fd-9d9f-a4ed3abf4743)
+
+Under the "Kind" drop down select "AWS Credentials"
+![Screenshot 2025-02-12 at 2 42 20 PM](https://github.com/user-attachments/assets/3d2015f8-47e1-459b-9517-e5addff3ee1a)
+
+ID: A name of your choosing. (Remember this name EXACTLY how you spelled it)
+
+Description: Any description
+
+Access Key ID: This HAS to be the "Access Key ID" we got from AWS
+
+Secret Access Key: This HAS to be the "Secret Access Key" we got from AWS
+
+Click create.
+
+No we need to install and move terraform from the terminal:
+
+In terminal/gitbash/docker-terminal run the command "docker exec -it <your_container_name> bash"
+
+Next we need to update our packages "apt update && apt install -y curl unzip"
+
+Next make a directory for our terraform files "mkdir -p /home/jenkins/bin"
+
+Now we need to download the terraform Binary. Mind you this command is for Apple Silicon(ARM64) Chipset 
+"curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/1.6.3/terraform_1.6.3_linux_arm64.zip/home/jenkins/terraform.zip"
+
+**For x86 you will need a different binary.** 
+
+Now we need to extract and Move Terraform to the correct location with this command:
+"unzip /home/jenkins/terraform.zip -d /home/jenkins/bin
+rm /home/jenkins/terraform.zip
+export PATH="/home/jenkins/bin:$PATH"
+
+Next lets check if terraform is working with "terraform -version"
+We should see an output some like this "Terraform v1.6.3
+on linux_arm64"
+
+---
 
 
 
